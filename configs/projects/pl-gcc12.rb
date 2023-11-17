@@ -5,8 +5,8 @@ project 'pl-gcc12' do |proj|
     proj.description 'Puppet Labs GCC'
 
     platform_name = platform.name
-    unless platform_name == 'el-7-x86_64' or platform_name == 'sles-12-x86_64'
-      raise 'pl-gcc12 is currently only built for el-7-x86_64 and sles-12-x86_64'
+    unless platform_name == 'el-7-x86_64' or platform_name == 'sles-12-x86_64' or platform_name =~ /^ubuntu-22/
+      raise 'pl-gcc12 is currently only built for el-7-x86_64, sles-12-x86_64, or ubuntu-22*'
     end
 
     gcc_version = '12.2.0'

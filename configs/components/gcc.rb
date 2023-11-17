@@ -1,6 +1,6 @@
 component "gcc" do |pkg, settings, platform|
   # Source-Related Metadata
-  if platform.name =~ /el-7-ppc64|sles-11-x86_64|sles-12-ppc64le|ubuntu-18\.(04|10)/
+  if platform.name =~ /el-7-ppc64|sles-11-x86_64|sles-12-ppc64le|ubuntu-(22|18)\.(04|10)/
     pkg.version "6.1.0"
     pkg.md5sum "8d04cbdfddcfad775fdbc5e112af2690"
   elsif platform.is_aix? || platform.architecture =~ /arm/
@@ -23,8 +23,9 @@ component "gcc" do |pkg, settings, platform|
   # patches applied.
   #
   # On Linux, you can check the glib version by running `ldd --version`
-  if platform.name =~ /ubuntu-18.(04|10)/
+  if platform.name =~ /ubuntu-(22|18).(04|10)/
     pkg.apply_patch "resources/patches/gcc/ucontext_t-linux-unwind_h.patch"
+    pkg.apply_patch "resources/patches/gcc/sanitizer-ustat-linux.patch"
     pkg.apply_patch "resources/patches/gcc/sanitizer_linux.patch"
   end
 
@@ -248,10 +249,9 @@ component "gcc" do |pkg, settings, platform|
   # Build Commands
   pkg.configure do
     [
-      #TODO figure out a better way to find the version number than hard-code it
-      'ln -s ../gmp-4.3.2 gmp',
-      'ln -s ../mpc-1.0.3 mpc',
-      'ln -s ../mpfr-2.4.2 mpfr',
+      "ln -s ../gmp-#{settings[:gmp_version]} gmp",
+      "ln -s ../mpc-#{settings[:mpc_version]} mpc",
+      "ln -s ../mpfr-#{settings[:mpfr_version]} mpfr",
       'mkdir -p ../obj-gcc-build-dir',
       'cd ../obj-gcc-build-dir',
       configure_command,

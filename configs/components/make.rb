@@ -9,8 +9,16 @@ component "make" do |pkg, settings, platform|
      pkg.build_requires "http://osmirror.delivery.puppetlabs.net/AIX_MIRROR/make-3.80-1.aix5.1.ppc.rpm"
   else
     pkg.build_requires "gcc"
-    pkg.build_requires "gcc-c++"
+    if platform.is_deb?
+      pkg.build_requires "g++"
+    else
+      pkg.build_requires "gcc-c++"
+    end
     pkg.build_requires "make"
+  end
+
+  if platform.name =~ /ubuntu-22/
+    pkg.apply_patch "resources/patches/make/ubuntu-glob.patch"
   end
 
   pkg.configure do
